@@ -1,0 +1,19 @@
+{
+  "name": "package-live-reload",
+  "version": "1.0.0",
+  "main": "lib/index",
+  "dependencies": {
+    "wch": "^0.1.2"
+  },
+  "engines": {
+    "atom": ">=0.174.0 <2.0.0"
+  },
+  "providedServices": {
+    "package-live-reload": {
+      "description": "Reload packages when their files change",
+      "versions": {
+        "1.0.0": "provide"
+      }
+    }
+  }
+}
