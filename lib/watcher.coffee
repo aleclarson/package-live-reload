@@ -29,25 +29,19 @@ watchPackage = (name, opts) ->
   packPath = fs.realpathSync pack.path
 
   reloading = false
-  watch = ->
-    stream = wch.stream packPath, opts
+  stream = wch.stream packPath, opts
 
-    .on 'data', debounce 100, ->
-      return if reloading
-      reloading = true
-      reloadPackage name
-      .then -> reloading = false
+  .on 'data', debounce 100, ->
+    return if reloading
+    reloading = true
+    reloadPackage name
+    .then -> reloading = false
 
-    .on 'end', -> # Rewatch after 1 - 5 seconds.
-      setTimeout watch, 1e3 + 4e3 * Math.random()
+  # Report any errors.
+  .on 'error', (err) ->
+    console.error err.stack
 
-    # Report any errors.
-    .on 'error', console.error
-
-    streams.set name, stream
-    return
-
-  watch()
+  streams.set name, stream
   if global.DEBUG
     console.log 'Watching package: ' + name
     return
