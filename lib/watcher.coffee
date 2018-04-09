@@ -110,7 +110,6 @@ unregisterPackage = (pack) ->
 
 setProjects = (paths) ->
   projectPaths = paths
-  console.log "projectPaths:", paths
 
   # End streams of packages no longer open.
   streams.forEach (stream, name) ->
@@ -148,7 +147,7 @@ module.exports =
       'package-live-reload:refresh': refreshPackages
     subs.add packages.onDidDeactivatePackage unregisterPackage
     subs.add atom.project.onDidChangePaths setProjects
-    setProjects atom.project.getPaths()
+    projectPaths = atom.project.getPaths()
 
     # Watch myself.
     registerPackage 'package-live-reload',
