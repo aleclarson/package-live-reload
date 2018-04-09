@@ -1,5 +1,6 @@
 {CompositeDisposable} = require 'atom'
 path = require 'path'
+sock = require 'wch/sock'
 wch = require 'wch'
 fs = require 'fs'
 
@@ -18,7 +19,7 @@ registerPackage = (name, opts) ->
   if global.DEBUG
     console.log 'Package activated:', name
 
-  if inActiveProject packPath
+  if sock.connected and inActiveProject packPath
     unwatchPackage name
     watchPackage name, opts
     return
@@ -127,6 +128,9 @@ setProjects = (paths) ->
         return
 
   # Start streams for newly opened packages.
+  startPendingStreams()
+
+startPendingStreams = ->
   registry.forEach (args, packPath) ->
     return if streams.has args[0]
     if inActiveProject packPath
@@ -137,6 +141,10 @@ endStream = (stream, name) ->
   stream.removeAllListeners 'end'
   stream.end()
   return
+
+# If the wch server is started after package-live-reload
+# is activated, we need to start the streams once connected.
+sock.on 'connect', startPendingStreams
 
 module.exports =
   watch: registerPackage
@@ -152,6 +160,9 @@ module.exports =
     # Watch myself.
     registerPackage 'package-live-reload',
       include: ['lib/**/*.coffee', 'package.json']
+
+    # Connect to wch.
+    sock.connect()
 
   stop: ->
     registry.clear()
