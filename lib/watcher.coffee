@@ -132,8 +132,7 @@ startPendingStreams = ->
 
 endStream = (stream, name) ->
   streams.delete name
-  stream.removeAllListeners 'end'
-  stream.end()
+  stream.destroy()
   return
 
 # If the wch server is started after package-live-reload
