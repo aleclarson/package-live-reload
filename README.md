@@ -9,7 +9,7 @@ In the `package.json` of your package:
 ```json
 "consumedServices": {
   "package-live-reload": {
-    "versions": {
+    "v1.0.1": {
       "^1.0.0": "consumeLiveReload"
     }
   }
